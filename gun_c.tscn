@@ -1,0 +1,154 @@
+[gd_scene load_steps=22 format=3 uid="uid://cbq88c4td0p8l"]
+
+[ext_resource type="Texture2D" uid="uid://diquj2xqpcb10" path="res://sprites/boss/guns-c.png" id="1_2kg5l"]
+[ext_resource type="Script" path="res://gun_c.gd" id="1_gps4i"]
+[ext_resource type="PackedScene" uid="uid://cwk204umjuy42" path="res://aimed_bullet.tscn" id="2_fmrej"]
+[ext_resource type="Shader" path="res://flash.gdshader" id="3_u6bgm"]
+[ext_resource type="Texture2D" uid="uid://g0wx8kicayka" path="res://sprites/boss/gun-c-dead.png" id="5_kbt4v"]
+[ext_resource type="Texture2D" uid="uid://dflp33tp1nnex" path="res://sprites/explosions/explosion-1.png" id="6_0ix0s"]
+[ext_resource type="AudioStream" uid="uid://bw81tpqa7wsq" path="res://sound/sfx/sfx_exp_short_hard12.wav" id="7_l46c3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ouoo"]
+resource_local_to_scene = true
+shader = ExtResource("3_u6bgm")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_modifier = 0.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8wgqh"]
+atlas = ExtResource("1_2kg5l")
+region = Rect2(0, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ytg05"]
+atlas = ExtResource("5_kbt4v")
+region = Rect2(0, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fvsjf"]
+atlas = ExtResource("1_2kg5l")
+region = Rect2(0, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_65tsb"]
+atlas = ExtResource("1_2kg5l")
+region = Rect2(8, 0, 8, 8)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ptvv"]
+atlas = ExtResource("1_2kg5l")
+region = Rect2(16, 0, 8, 8)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vkski"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8wgqh")
+}],
+"loop": true,
+"name": &"closed",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ytg05")
+}],
+"loop": true,
+"name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fvsjf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_65tsb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ptvv")
+}],
+"loop": false,
+"name": &"open",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7g24f"]
+atlas = ExtResource("6_0ix0s")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wbvdb"]
+atlas = ExtResource("6_0ix0s")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e12cy"]
+atlas = ExtResource("6_0ix0s")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p14ay"]
+atlas = ExtResource("6_0ix0s")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3kvjq"]
+atlas = ExtResource("6_0ix0s")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ljthj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7g24f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wbvdb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e12cy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p14ay")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3kvjq")
+}],
+"loop": false,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sqx77"]
+size = Vector2(8, 8)
+
+[node name="gun_c" type="Area2D" groups=["enemies"]]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_gps4i")
+bullet_node = ExtResource("2_fmrej")
+
+[node name="Animation" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_7ouoo")
+sprite_frames = SubResource("SpriteFrames_vkski")
+animation = &"closed"
+autoplay = "closed"
+
+[node name="Explosion" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(0, 1)
+sprite_frames = SubResource("SpriteFrames_ljthj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_sqx77")
+disabled = true
+
+[node name="BurstSpeed" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
+[node name="BurstInterval" type="Timer" parent="."]
+wait_time = 2.0
+
+[node name="FlashTimer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="ExplosionSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_l46c3")
+
+[connection signal="animation_finished" from="Animation" to="." method="_on_animation_animation_finished"]
+[connection signal="animation_finished" from="Explosion" to="." method="_on_explosion_animation_finished"]
+[connection signal="timeout" from="BurstSpeed" to="." method="_on_burst_speed_timeout"]
+[connection signal="timeout" from="BurstInterval" to="." method="_on_burst_interval_timeout"]
+[connection signal="timeout" from="FlashTimer" to="." method="_on_flash_timer_timeout"]

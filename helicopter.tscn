@@ -1,0 +1,124 @@
+[gd_scene load_steps=18 format=3 uid="uid://bhitw10ofj648"]
+
+[ext_resource type="Texture2D" uid="uid://m4orcbw0gt5g" path="res://sprites/helicopter.png" id="1_4qxx4"]
+[ext_resource type="Script" path="res://helicopter.gd" id="1_ey02h"]
+[ext_resource type="PackedScene" uid="uid://cwk204umjuy42" path="res://aimed_bullet.tscn" id="2_unstp"]
+[ext_resource type="Shader" path="res://flash.gdshader" id="3_qegkh"]
+[ext_resource type="Texture2D" uid="uid://l4k401lqkj37" path="res://sprites/explosions/explosion-2.png" id="5_0tets"]
+[ext_resource type="AudioStream" uid="uid://dfawnkprpj5qb" path="res://sound/sfx/explosion-1.mp3" id="6_r18d8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3ctnc"]
+resource_local_to_scene = true
+shader = ExtResource("3_qegkh")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_modifier = 0.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yqke4"]
+atlas = ExtResource("1_4qxx4")
+region = Rect2(0, 0, 55, 44)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jvc7s"]
+atlas = ExtResource("1_4qxx4")
+region = Rect2(55, 0, 55, 44)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2vcks"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yqke4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jvc7s")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_43rr5"]
+atlas = ExtResource("5_0tets")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_apk38"]
+atlas = ExtResource("5_0tets")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aptap"]
+atlas = ExtResource("5_0tets")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cnjx0"]
+atlas = ExtResource("5_0tets")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8w2dj"]
+atlas = ExtResource("5_0tets")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6snrb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_43rr5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_apk38")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aptap")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cnjx0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8w2dj")
+}],
+"loop": false,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_88s8i"]
+size = Vector2(53, 30)
+
+[node name="Helicopter" type="Area2D" groups=["enemies"]]
+collision_layer = 2
+script = ExtResource("1_ey02h")
+bullet_scene = ExtResource("2_unstp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_3ctnc")
+position = Vector2(6, 0)
+sprite_frames = SubResource("SpriteFrames_2vcks")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.193959
+
+[node name="Explosion" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_6snrb")
+frame = 4
+frame_progress = 1.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(6.5, 0)
+shape = SubResource("RectangleShape2D_88s8i")
+
+[node name="GunTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="StartAttack" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[node name="FlashTimer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="ExplodeSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_r18d8")
+
+[connection signal="animation_finished" from="Explosion" to="." method="_on_explosion_animation_finished"]
+[connection signal="timeout" from="GunTimer" to="." method="_on_gun_timer_timeout"]
+[connection signal="timeout" from="StartAttack" to="." method="_on_start_attack_timeout"]
+[connection signal="timeout" from="FlashTimer" to="." method="_on_flash_timer_timeout"]

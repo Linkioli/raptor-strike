@@ -1,0 +1,91 @@
+[gd_scene load_steps=9 format=3 uid="uid://coqcdw1d1jhpl"]
+
+[ext_resource type="Texture2D" uid="uid://b5gdaj5ctkcqt" path="res://sprites/boss/deck.png" id="1_rxyll"]
+[ext_resource type="Script" path="res://boss.gd" id="1_xirxe"]
+[ext_resource type="PackedScene" uid="uid://smatdsepyv3q" path="res://enemy_fighter.tscn" id="2_mlly3"]
+[ext_resource type="PackedScene" uid="uid://cidaqe244nw7y" path="res://bridge.tscn" id="3_msfim"]
+[ext_resource type="PackedScene" uid="uid://5wuebwg2ruwi" path="res://gun_a.tscn" id="4_dgrgx"]
+[ext_resource type="PackedScene" uid="uid://cjr5o2fpk844n" path="res://gun_b.tscn" id="4_heasj"]
+[ext_resource type="PackedScene" uid="uid://cbq88c4td0p8l" path="res://gun_c.tscn" id="6_dmct6"]
+[ext_resource type="PackedScene" uid="uid://bspt5l7fc1o8g" path="res://hangar.tscn" id="7_y2wbg"]
+
+[node name="Boss" type="Area2D"]
+script = ExtResource("1_xirxe")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -130)
+texture = ExtResource("1_rxyll")
+
+[node name="gun_a1" parent="." instance=ExtResource("4_dgrgx")]
+position = Vector2(-46, -80)
+
+[node name="gun_a2" parent="." instance=ExtResource("4_dgrgx")]
+position = Vector2(46, -80)
+
+[node name="gun_b1" parent="." instance=ExtResource("4_heasj")]
+position = Vector2(-34, -32)
+
+[node name="gun_b2" parent="." instance=ExtResource("4_heasj")]
+position = Vector2(34, -32)
+
+[node name="bridge" parent="." instance=ExtResource("3_msfim")]
+position = Vector2(0, -80)
+
+[node name="gun_c1" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(-39, -147)
+
+[node name="gun_c2" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(39, -147)
+
+[node name="gun_c3" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(-39, -136)
+
+[node name="gun_c4" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(39, -136)
+
+[node name="gun_c5" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(-39, -125)
+
+[node name="gun_c6" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(39, -125)
+
+[node name="gun_c7" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(-50, -114)
+
+[node name="gun_c8" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(-39, -114)
+
+[node name="gun_c9" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(39, -114)
+
+[node name="gun_c10" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(50, -114)
+
+[node name="gun_c11" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(-50, -103)
+
+[node name="gun_c12" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(-39, -103)
+
+[node name="gun_c13" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(39, -103)
+
+[node name="gun_c14" parent="." instance=ExtResource("6_dmct6")]
+position = Vector2(50, -103)
+
+[node name="EnemyFighter" parent="." instance=ExtResource("2_mlly3")]
+position = Vector2(0, -126)
+
+[node name="Hangar" parent="." instance=ExtResource("7_y2wbg")]
+position = Vector2(-2, -126)
+
+[node name="HangarOpenTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="killed" from="bridge" to="." method="_on_bridge_killed"]
+[connection signal="departed" from="EnemyFighter" to="." method="_on_enemy_fighter_departed"]
+[connection signal="killed" from="EnemyFighter" to="." method="_on_enemy_fighter_killed"]
+[connection signal="closed" from="Hangar" to="." method="_on_hangar_closed"]
+[connection signal="killed" from="Hangar" to="." method="_on_hangar_killed"]
+[connection signal="opened" from="Hangar" to="." method="_on_hangar_opened"]
+[connection signal="timeout" from="HangarOpenTimer" to="." method="_on_hangar_open_timer_timeout"]

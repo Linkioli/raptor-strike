@@ -1,0 +1,141 @@
+[gd_scene load_steps=18 format=3 uid="uid://smatdsepyv3q"]
+
+[ext_resource type="Script" path="res://enemy_fighter.gd" id="1_jxvgn"]
+[ext_resource type="Texture2D" uid="uid://bqadrlu73lgml" path="res://sprites/enemy-jet.png" id="1_tnxc8"]
+[ext_resource type="PackedScene" uid="uid://bcpa8n4ruqycd" path="res://enemy_bullet.tscn" id="2_5o3oe"]
+[ext_resource type="Shader" path="res://flash.gdshader" id="3_s8wou"]
+[ext_resource type="Texture2D" uid="uid://l4k401lqkj37" path="res://sprites/explosions/explosion-2.png" id="5_3n0wc"]
+[ext_resource type="AudioStream" uid="uid://dfawnkprpj5qb" path="res://sound/sfx/explosion-1.mp3" id="6_mork5"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rvw0r"]
+radius = 11.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_edjnm"]
+resource_local_to_scene = true
+shader = ExtResource("3_s8wou")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_modifier = 0.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gxev1"]
+atlas = ExtResource("1_tnxc8")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bap41"]
+atlas = ExtResource("1_tnxc8")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u82ha"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gxev1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bap41")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2ousr"]
+atlas = ExtResource("5_3n0wc")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ii2k"]
+atlas = ExtResource("5_3n0wc")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tilvk"]
+atlas = ExtResource("5_3n0wc")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2ptyb"]
+atlas = ExtResource("5_3n0wc")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pwu03"]
+atlas = ExtResource("5_3n0wc")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xvttr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2ousr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1ii2k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tilvk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2ptyb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pwu03")
+}],
+"loop": false,
+"name": &"default",
+"speed": 10.0
+}]
+
+[node name="EnemyFighter" type="Area2D" groups=["enemies"]]
+collision_layer = 2
+script = ExtResource("1_jxvgn")
+bullet_scene = ExtResource("2_5o3oe")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_rvw0r")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_edjnm")
+sprite_frames = SubResource("SpriteFrames_u82ha")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.788279
+
+[node name="ExplosionSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_xvttr")
+frame = 4
+frame_progress = 1.0
+
+[node name="ExplosionSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_mork5")
+
+[node name="DepartTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="BoostTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="SpawnTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="GunTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="FlashTimer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="Gun" type="Marker2D" parent="."]
+position = Vector2(0, -16)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." groups=["enemies"]]
+
+[connection signal="animation_finished" from="ExplosionSprite" to="." method="_on_explosion_sprite_animation_finished"]
+[connection signal="finished" from="ExplosionSound" to="." method="_on_explosion_sound_finished"]
+[connection signal="timeout" from="DepartTimer" to="." method="_on_depart_timer_timeout"]
+[connection signal="timeout" from="BoostTimer" to="." method="_on_boost_timer_timeout"]
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
+[connection signal="timeout" from="GunTimer" to="." method="_on_gun_timer_timeout"]
+[connection signal="timeout" from="AttackTimer" to="." method="_on_attack_timer_timeout"]
+[connection signal="timeout" from="FlashTimer" to="." method="_on_flash_timer_timeout"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

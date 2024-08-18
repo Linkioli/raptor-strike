@@ -1,0 +1,160 @@
+[gd_scene load_steps=23 format=3 uid="uid://cjr5o2fpk844n"]
+
+[ext_resource type="Script" path="res://gun_b.gd" id="1_0yoqf"]
+[ext_resource type="Texture2D" uid="uid://b2crqoiyure84" path="res://sprites/boss/guns-b.png" id="1_4x8ed"]
+[ext_resource type="PackedScene" uid="uid://cwk204umjuy42" path="res://aimed_bullet.tscn" id="2_vh3qm"]
+[ext_resource type="Shader" path="res://flash.gdshader" id="3_fnoa5"]
+[ext_resource type="Texture2D" uid="uid://cgdcwis2omer2" path="res://sprites/explosions/gun-a-explosion.png" id="5_blima"]
+[ext_resource type="Texture2D" uid="uid://byhns43k7h7el" path="res://sprites/boss/gun-b-dead.png" id="5_u18cc"]
+[ext_resource type="AudioStream" uid="uid://depbr726nma8t" path="res://sound/sfx/sfx_exp_medium7.wav" id="7_df4xm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s21kr"]
+resource_local_to_scene = true
+shader = ExtResource("3_fnoa5")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_modifier = 0.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yvp2m"]
+atlas = ExtResource("1_4x8ed")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y81on"]
+atlas = ExtResource("5_u18cc")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wi6k6"]
+atlas = ExtResource("1_4x8ed")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6us4b"]
+atlas = ExtResource("1_4x8ed")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wsmrv"]
+atlas = ExtResource("1_4x8ed")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ity3y"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yvp2m")
+}],
+"loop": true,
+"name": &"closed",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y81on")
+}],
+"loop": true,
+"name": &"die",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wi6k6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6us4b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wsmrv")
+}],
+"loop": false,
+"name": &"open",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_12b83"]
+atlas = ExtResource("5_blima")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6iaqr"]
+atlas = ExtResource("5_blima")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vsss0"]
+atlas = ExtResource("5_blima")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mkghw"]
+atlas = ExtResource("5_blima")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b5xui"]
+atlas = ExtResource("5_blima")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_14wwb"]
+atlas = ExtResource("5_blima")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0blm3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_12b83")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6iaqr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vsss0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mkghw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b5xui")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_14wwb")
+}],
+"loop": false,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eeghp"]
+size = Vector2(16, 16)
+
+[node name="gun_b" type="Area2D" groups=["enemies"]]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("1_0yoqf")
+alpha = 0.805
+bullet_node = ExtResource("2_vh3qm")
+
+[node name="Animation" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_s21kr")
+sprite_frames = SubResource("SpriteFrames_ity3y")
+animation = &"closed"
+autoplay = "closed"
+
+[node name="ExplosionSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(0, 1)
+sprite_frames = SubResource("SpriteFrames_0blm3")
+frame = 5
+frame_progress = 1.0
+
+[node name="Speed" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_eeghp")
+disabled = true
+
+[node name="FlashTimer" type="Timer" parent="."]
+wait_time = 0.1
+
+[node name="ExplosionSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_df4xm")
+
+[connection signal="animation_finished" from="Animation" to="." method="_on_animation_animation_finished"]
+[connection signal="animation_finished" from="ExplosionSprite" to="." method="_on_explosion_sprite_animation_finished"]
+[connection signal="timeout" from="Speed" to="." method="_on_speed_timeout"]
+[connection signal="timeout" from="FlashTimer" to="." method="_on_flash_timer_timeout"]

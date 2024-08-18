@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://bmbgg7ayad33t"]
+
+[ext_resource type="Script" path="res://prop_fighter.gd" id="1_l81w8"]
+[ext_resource type="Texture2D" uid="uid://bqadrlu73lgml" path="res://sprites/enemy-jet.png" id="1_ogt0j"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uueyd"]
+atlas = ExtResource("1_ogt0j")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ydftc"]
+atlas = ExtResource("1_ogt0j")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ygp7t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uueyd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ydftc")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}]
+
+[node name="PropFighter" type="Area2D"]
+script = ExtResource("1_l81w8")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_ygp7t")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.934001
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+position = Vector2(0.5, 0)
+scale = Vector2(1.35, 1.7)
+
+[node name="BoostTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
+[connection signal="timeout" from="BoostTimer" to="." method="_on_boost_timer_timeout"]

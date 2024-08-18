@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4xjauxt7in2l"]
+
+[ext_resource type="FontFile" uid="uid://bhd7rais7yn2q" path="res://SRAFreePixelFontPack/PixelMiddle.ttf" id="1_26exd"]
+[ext_resource type="Script" path="res://end_screen.gd" id="1_ga0yk"]
+
+[node name="ColorRect" type="ColorRect"]
+offset_right = 480.0
+offset_bottom = 270.0
+color = Color(0, 0, 0, 0)
+script = ExtResource("1_ga0yk")
+
+[node name="MissionObjective" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_top = 39.0
+offset_right = 480.0
+offset_bottom = 211.0
+theme_override_colors/font_color = Color(0.658824, 0.792157, 0.345098, 1)
+theme_override_fonts/font = ExtResource("1_26exd")
+theme_override_font_sizes/font_size = 64
+text = "MISssion Complete"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Subjective" type="Label" parent="MissionObjective"]
+visible = false
+layout_mode = 0
+offset_left = 2.0
+offset_top = 42.0
+offset_right = 482.0
+offset_bottom = 214.0
+theme_override_colors/font_color = Color(0.658824, 0.792157, 0.345098, 1)
+theme_override_fonts/font = ExtResource("1_26exd")
+theme_override_font_sizes/font_size = 32
+text = "the end"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MissionCompleteTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="TheEndTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="MissionCompleteTimer" to="." method="_on_mission_complete_timer_timeout"]
+[connection signal="timeout" from="TheEndTimer" to="." method="_on_the_end_timer_timeout"]
